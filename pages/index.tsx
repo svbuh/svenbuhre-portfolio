@@ -1,86 +1,85 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
+import type { NextPage } from "next";
+import Head from "next/head";
+import Header from "../components/Header";
+import { sanityClient } from "../sanity";
 
-const Home: NextPage = () => {
+interface HomeDocument {
+  title: string;
+  name: string;
+  personDescriptionFirst: string;
+  personDescriptionSecond: string;
+  aboutMe: string;
+}
+
+interface Props {
+  home: [HomeDocument];
+}
+
+const Home: NextPage<Props> = ({ home }: Props) => {
+  console.log(home);
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center py-2">
+    <div>
       <Head>
-        <title>Create Next App</title>
+        <title>Sven Buhre - Software Engineer</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
-        <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="text-blue-600" href="https://nextjs.org">
-            Next.js!
-          </a>
-        </h1>
-
-        <p className="mt-3 text-2xl">
-          Get started by editing{' '}
-          <code className="rounded-md bg-gray-100 p-3 font-mono text-lg">
-            pages/index.tsx
-          </code>
-        </p>
-
-        <div className="mt-6 flex max-w-4xl flex-wrap items-center justify-around sm:w-full">
-          <a
-            href="https://nextjs.org/docs"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Documentation &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Find in-depth information about Next.js features and its API.
+      <Header />
+      <div className="h-screen">
+        <div className="text-gray-900 dark:text-white text-center">
+          <div className="flex justify-center items-center">
+            <span className="text-md font-black uppercase text-center text-gray-500 dark:text-gray-400 tracking-widest p-3 md:p-5">
+              {home.map((homeElement) => homeElement.title)}
+            </span>
+          </div>
+          <div className="font-black text-transparent text-4xl md:text-5xl bg-clip-text bg-gradient-to-r from-blue-500 to-teal-400">
+            <p className="p-3">{home.map((homeElement) => homeElement.name)}</p>
+            <p className="p-3">{home.map((homeElement) => homeElement.personDescriptionFirst)}</p>
+            <p className="p-3">{home.map((homeElement) => homeElement.personDescriptionSecond)}</p>
+          </div>
+          <div className="max-w-xl mx-auto p-5">
+            <p className="text-lg sm:text-xl text-center leading-7 sm:leading-8 text-gray-700 dark:text-gray-300">
+              <strong>{home.map((homeElement) => homeElement.aboutMe)}</strong>
             </p>
-          </a>
-
+          </div>
+        </div>
+        <div className="flex justify-center items-center flex-col sm:flex-row mt-6 max-w-xl mx-auto items-center">
           <a
-            href="https://nextjs.org/learn"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
+            href="https://google.de"
+            target="_blank"
+            className="py-3 mx-2 my-2 rounded-full font-bold leading-none translate-hover-2 hover:shadow-lg transition-all ease-in-out duration-150 px-5  w-3/5 text-center rounded-full bg-sky-500 text-white hover:bg-sky-600 hover:text-white"
+            rel="noopener noreferrer"
           >
-            <h3 className="text-2xl font-bold">Learn &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Learn about Next.js in an interactive course with quizzes!
-            </p>
+            SHOW CV
           </a>
-
           <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
+            href="contact"
+            className="py-3 mx-2 my-2 rounded-full font-bold leading-none translate-hover-2 hover:shadow-lg transition-all ease-in-out duration-150 px-5  w-3/5 text-center rounded-full bg-sky-500 text-white hover:bg-sky-600 hover:text-white"
           >
-            <h3 className="text-2xl font-bold">Examples &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Discover and deploy boilerplate example Next.js projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Deploy &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
+            GITHUB REPOSITORY
           </a>
         </div>
-      </main>
-
-      <footer className="flex h-24 w-full items-center justify-center border-t">
-        <a
-          className="flex items-center justify-center gap-2"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-        </a>
-      </footer>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export const getServerSideProps = async () => {
+  const query = `*[_type == "home"]{
+    aboutMe,
+    name,
+    personDescriptionFirst,
+    personDescriptionSecond,
+    title,
+  }`;
+  const home = await sanityClient.fetch(query);
+
+  return {
+    props: {
+      home,
+    },
+  };
+};
+
+export default Home;
