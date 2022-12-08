@@ -2,8 +2,6 @@ import React, {useEffect, useState} from 'react'
 import {alpha, styled} from "@mui/material/styles";
 import Switch from "@mui/material/Switch";
 import Menu, {MenuProps} from "@mui/material/Menu";
-import Button from "@mui/material/Button";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import MenuItem from "@mui/material/MenuItem";
 import HomeIcon from '@mui/icons-material/Home';
 import ScienceIcon from '@mui/icons-material/Science';
