@@ -11,26 +11,31 @@ const TermsAndConditions: NextPage = () => {
             <strong>Data Protection:</strong>
             <br /> We will use your personal data, including your email address, only for the purpose of processing your
             inquiry or request.
+            <br />
           </li>
           <li>
             <strong>Data Retention:</strong>
             <br /> We will retain your personal data for as long as it is necessary to fulfill the purpose for which it
             was collected or as required by law.
+            <br />
           </li>
           <li>
             <strong>Data Sharing:</strong>
             <br /> We will not share your personal data with any third parties without your explicit consent, except
             where required by law or where necessary for the performance of our contractual obligations to you.
+            <br />
           </li>
           <li>
             <strong>Data Security:</strong>
             <br /> We take appropriate technical and organizational measures to protect your personal data against
             unauthorized access, alteration, disclosure, or destruction.
+            <br />
           </li>
           <li>
             <strong>Your Rights:</strong>
             <br /> You have the right to request access to, correction or deletion of your personal data, as well as the
             right to object to the processing of your personal data or to request its restriction.
+            <br />
           </li>
         </ol>
         <br />
