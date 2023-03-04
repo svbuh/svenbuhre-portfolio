@@ -9,19 +9,20 @@ export default {
             title: 'Title'
         },
         {
+            name: 'welcomeGreeting',
+            type: 'string',
+            title: 'Welcome Greeting'
+        },
+        {
             name: 'name',
             type: 'string',
             title: 'Name'
         },
         {
-            name: 'personDescriptionFirst',
-            type: 'string',
-            title: 'Person Description First Row'
-        },
-        {
-            name: 'personDescriptionSecond',
-            type: 'string',
-            title: 'Person Description Second Row'
+            title: 'Person Descriptions',
+            name: 'personDescriptions',
+            type: 'array',
+            of: [{type: 'string'}]
         },
         {
             name: 'aboutMe',
