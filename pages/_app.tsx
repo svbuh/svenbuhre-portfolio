@@ -20,7 +20,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     const preferredTheme = window.localStorage.getItem("theme");
-    if (preferredTheme === "dark") {
+    if (preferredTheme === "dark" || window.matchMedia('(prefers-color-scheme: dark)').matches) {
       setDarkMode(true);
       document.documentElement.classList.remove("light");
       document.documentElement.classList.add("dark");
