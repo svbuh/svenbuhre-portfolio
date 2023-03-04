@@ -42,7 +42,7 @@ const CV: NextPage<Props> = ({ cv }: Props) => {
   );
 };
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   const query = `*[_type == "cv"]{
     cvItems[]->{
       title,
