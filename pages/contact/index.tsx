@@ -1,4 +1,4 @@
-import { Button, Checkbox, Label, TextInput, Textarea, Toast } from "flowbite-react";
+import { Button, Checkbox, Label, TextInput, Textarea, Toast, Spinner } from "flowbite-react";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -10,7 +10,7 @@ const Contact: NextPage = () => {
   const { userMessage, setUserMessage } = useContactStore();
   const { agreeCheckbox, setAgreeCheckbox } = useContactStore();
   const [disabledCheckbox, setDisabledCheckbox] = useState(false);
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [isFormSubmitted, setIsFormSubmitted] = useState<"idle" | "loading" | "success" | "error">("idle");
 
   const emailRegex =
     /^[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
@@ -37,6 +37,8 @@ const Contact: NextPage = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsFormSubmitted("loading");
+
     try {
       const response = await fetch("/api/sendEmail", {
         method: "POST",
@@ -49,13 +51,48 @@ const Contact: NextPage = () => {
       setEmailAddress("");
       setUserMessage("");
       setAgreeCheckbox(false);
-      setIsFormSubmitted(true);
-    } catch (error) {}
+      setIsFormSubmitted("success");
+    } catch (error) {
+      setIsFormSubmitted("error");
+    }
   };
 
   useEffect(() => {
     setDisabledCheckbox(isNonEmptyString() && isValidEmail() && agreeCheckbox ? false : true);
   }, [emailAddress, userMessage, agreeCheckbox]);
+
+  const showSendMailToast = () => {
+    if (isFormSubmitted === "success") {
+      return (
+        <div className="max-w-2xl mx-auto pl-9 space-x-4 divide-x divide-gray-200 dark:divide-gray-700">
+          <Toast>
+            <SendIcon className="h-5 w-5 text-blue-600 dark:text-blue-500" />
+            <div className="pl-4 text-sm font-normal">Message sent successfully.</div>
+          <Toast.Toggle />
+          </Toast>
+        </div>
+      );
+    }
+    if (isFormSubmitted === "error") {
+      return "Please try again.";
+    }
+  };
+
+  const handleSubmitButton = () => {
+    if (isFormSubmitted !== "loading") {
+      return (
+        <Button type="submit" disabled={disabledCheckbox}>
+          Send Message
+        </Button>
+      );
+    }
+    return (
+      <Button type="submit" disabled={disabledCheckbox}>
+        <Spinner />
+        <span className="pl-3">Sending...</span>
+      </Button>
+    );
+  };
 
   return (
     <>
@@ -96,21 +133,9 @@ const Contact: NextPage = () => {
             </Link>
           </Label>
         </div>
-        <div className="p-3">
-          <Button type="submit" disabled={disabledCheckbox}>
-            Send Message
-          </Button>
-        </div>
+        <div className="p-3">{handleSubmitButton()}</div>
       </form>
-      {isFormSubmitted ? (
-        <div className="max-w-2xl mx-auto pl-9 space-x-4 divide-x divide-gray-200 dark:divide-gray-700">
-          <Toast>
-            <SendIcon className="h-5 w-5 text-blue-600 dark:text-blue-500" />
-            <div className="pl-4 text-sm font-normal">Message sent successfully.</div>
-            <Toast.Toggle />
-          </Toast>
-        </div>
-      ) : null}
+      {showSendMailToast()}
     </>
   );
 };
