@@ -1,14 +1,16 @@
-import { Button, Checkbox, Label, TextInput, Textarea } from "flowbite-react";
+import { Button, Checkbox, Label, TextInput, Textarea, Toast } from "flowbite-react";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useContactStore } from "../../store/ContactStore";
+import SendIcon from "@mui/icons-material/Send";
 
 const Contact: NextPage = () => {
   const { emailAddress, setEmailAddress } = useContactStore();
   const { userMessage, setUserMessage } = useContactStore();
   const { agreeCheckbox, setAgreeCheckbox } = useContactStore();
   const [disabledCheckbox, setDisabledCheckbox] = useState(false);
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
   const emailRegex =
     /^[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
@@ -43,6 +45,11 @@ const Contact: NextPage = () => {
       });
 
       await response.json();
+
+      setEmailAddress("");
+      setUserMessage("");
+      setAgreeCheckbox(false);
+      setIsFormSubmitted(true);
     } catch (error) {}
   };
 
@@ -95,6 +102,15 @@ const Contact: NextPage = () => {
           </Button>
         </div>
       </form>
+      {isFormSubmitted ? (
+        <div className="max-w-2xl mx-auto pl-9 space-x-4 divide-x divide-gray-200 dark:divide-gray-700">
+          <Toast>
+            <SendIcon className="h-5 w-5 text-blue-600 dark:text-blue-500" />
+            <div className="pl-4 text-sm font-normal">Message sent successfully.</div>
+            <Toast.Toggle />
+          </Toast>
+        </div>
+      ) : null}
     </>
   );
 };
