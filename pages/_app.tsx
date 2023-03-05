@@ -6,8 +6,13 @@ import { useEffect, useState } from "react";
 import BottomNavigation from "../components/BottomNavigation";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [darkMode, setDarkMode] = useState(true);
-  const [isMobile, setIsMobile] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     function handleResize() {
@@ -19,22 +24,33 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   useEffect(() => {
-    const preferredTheme = window.localStorage.getItem("theme");
-    if (preferredTheme === "dark") {
-      setDarkMode(true);
-      document.documentElement.classList.remove("light");
-      document.documentElement.classList.add("dark");
-    } else if (preferredTheme === "light") {
-      setDarkMode(false);
-      document.documentElement.classList.remove("dark");
-      document.documentElement.classList.add("light");
-    } else {
-      // if there is no value in localStorage, set the theme to dark by default
-      setDarkMode(true);
-      window.localStorage.setItem("theme", "dark");
-      document.documentElement.classList.add("dark");
+    if (isMounted && typeof window !== "undefined") {
+      const preferredTheme = window.localStorage.getItem("theme");
+      const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)");
+
+      if (preferredTheme === "dark") {
+        setDarkMode(true);
+        document.documentElement.classList.remove("light");
+        document.documentElement.classList.add("dark");
+      } else if (preferredTheme === "light") {
+        setDarkMode(false);
+        document.documentElement.classList.remove("dark");
+        document.documentElement.classList.add("light");
+      } else {
+        if (prefersDarkMode.matches) {
+          setDarkMode(true);
+          window.localStorage.setItem("theme", "dark");
+          document.documentElement.classList.remove("light");
+          document.documentElement.classList.add("dark");
+        } else {
+          setDarkMode(false);
+          window.localStorage.setItem("theme", "light");
+          document.documentElement.classList.remove("dark");
+          document.documentElement.classList.add("light");
+        }
+      }
     }
-  }, []);
+  }, [isMounted]);
 
   const toggleColorMode = () => {
     setDarkMode(!darkMode);
