@@ -61,14 +61,14 @@ const Contact: NextPage = () => {
     setDisabledCheckbox(isNonEmptyString() && isValidEmail() && agreeCheckbox ? false : true);
   }, [emailAddress, userMessage, agreeCheckbox]);
 
-  const showSendMailToast = () => {
+  const handleSandMailToast = () => {
     if (isFormSubmitted === "success") {
       return (
         <div className="max-w-2xl mx-auto pl-9 space-x-4 divide-x divide-gray-200 dark:divide-gray-700">
           <Toast>
             <SendIcon className="h-5 w-5 text-blue-600 dark:text-blue-500" />
             <div className="pl-4 text-sm font-normal">Message sent successfully.</div>
-          <Toast.Toggle />
+            <Toast.Toggle />
           </Toast>
         </div>
       );
@@ -87,10 +87,14 @@ const Contact: NextPage = () => {
       );
     }
     return (
-      <Button type="submit" disabled={disabledCheckbox}>
-        <Spinner />
-        <span className="pl-3">Sending...</span>
-      </Button>
+      <div className="flex items-center mx-auto">
+        <Button type="submit" disabled={disabledCheckbox} color="gray">
+          <div className="flex items-center">
+            <Spinner size="sm" />
+            <span className="pl-3">Sending...</span>
+          </div>
+        </Button>
+      </div>
     );
   };
 
@@ -135,7 +139,7 @@ const Contact: NextPage = () => {
         </div>
         <div className="p-3">{handleSubmitButton()}</div>
       </form>
-      {showSendMailToast()}
+      {handleSandMailToast()}
     </>
   );
 };
