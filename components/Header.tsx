@@ -6,25 +6,12 @@ import Link from "next/link";
 interface Props {
   darkMode: boolean;
   isMobile: boolean;
-  setDarkMode: (value: boolean) => void;
+  toggleColorMode: () => void;
 }
 
-const Header: React.FC<Props> = ({ darkMode, isMobile, setDarkMode }) => {
+const Header: React.FC<Props> = ({ darkMode, isMobile, toggleColorMode }) => {
   const router = useRouter();
-
-  const toggleColorMode = () => {
-    if (darkMode) {
-      setDarkMode(false);
-      document.documentElement.classList.remove("dark");
-      document.documentElement.classList.add("light");
-      window.localStorage.setItem("theme", "light");
-    } else {
-      setDarkMode(true);
-      document.documentElement.classList.remove("light");
-      document.documentElement.classList.add("dark");
-      window.localStorage.setItem("theme", "dark");
-    }
-  };
+  
   return (
     <div className="max-w-2xl mx-auto" id="headerDiv">
       <Navbar fluid={true} rounded={true} className="bg-slate-100 dark:bg-gray-900 py-4">

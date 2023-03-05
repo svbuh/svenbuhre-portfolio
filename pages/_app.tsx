@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import BottomNavigation from "../components/BottomNavigation";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [isMobile, setIsMobile] = useState(true);
 
   useEffect(() => {
@@ -20,16 +20,34 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     const preferredTheme = window.localStorage.getItem("theme");
-    if (preferredTheme === "dark" || window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    if (preferredTheme === "dark") {
       setDarkMode(true);
       document.documentElement.classList.remove("light");
       document.documentElement.classList.add("dark");
-    } else {
+    } else if (preferredTheme === "light") {
       setDarkMode(false);
       document.documentElement.classList.remove("dark");
       document.documentElement.classList.add("light");
+    } else {
+      // if there is no value in localStorage, set the theme to dark by default
+      setDarkMode(true);
+      window.localStorage.setItem("theme", "dark");
+      document.documentElement.classList.add("dark");
     }
   }, []);
+
+  const toggleColorMode = () => {
+    setDarkMode(!darkMode);
+    if (darkMode) {
+      window.localStorage.setItem("theme", "light");
+      document.documentElement.classList.remove("dark");
+      document.documentElement.classList.add("light");
+    } else {
+      window.localStorage.setItem("theme", "dark");
+      document.documentElement.classList.remove("light");
+      document.documentElement.classList.add("dark");
+    }
+  };
 
   return (
     <>
@@ -39,7 +57,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
       <div className={`flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900 pb-20`}>
         <div className="flex-grow">
-          <Header darkMode={darkMode} setDarkMode={setDarkMode} isMobile={isMobile} />
+          <Header darkMode={darkMode} toggleColorMode={toggleColorMode} isMobile={isMobile} />
           <Component {...pageProps} />
         </div>
         {isMobile ? (
