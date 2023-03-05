@@ -90,7 +90,7 @@ const Contact: NextPage = () => {
       <div className="flex items-center mx-auto">
         <Button type="submit" disabled={disabledCheckbox} color="gray">
           <div className="flex items-center">
-            <Spinner size="sm" />
+            <Spinner />
             <span className="pl-3">Sending...</span>
           </div>
         </Button>
